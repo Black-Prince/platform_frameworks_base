@@ -726,6 +726,9 @@ public class AudioService extends IAudioService.Stub {
             readDockAudioSettings(cr);
         }
 
+        mLinkNotificationWithVolume = Settings.System.getIntForUser(cr,
+                Settings.System.VOLUME_LINK_NOTIFICATION, 1, UserHandle.USER_CURRENT) == 1;
+
         mMuteAffectedStreams = System.getIntForUser(cr,
                 System.MUTE_STREAMS_AFFECTED,
                 ((1 << AudioSystem.STREAM_MUSIC)|
@@ -3734,6 +3737,13 @@ public class AudioService extends IAudioService.Stub {
                     setRingerModeInt(getRingerMode(), false);
                 }
                 readDockAudioSettings(mContentResolver);
+                mLinkNotificationWithVolume = Settings.System.getIntForUser(mContentResolver,
+                        Settings.System.VOLUME_LINK_NOTIFICATION, 1, UserHandle.USER_CURRENT) == 1;
+                if (mLinkNotificationWithVolume) {
+                    mStreamVolumeAlias[AudioSystem.STREAM_NOTIFICATION] = AudioSystem.STREAM_RING;
+                } else {
+                    mStreamVolumeAlias[AudioSystem.STREAM_NOTIFICATION] = AudioSystem.STREAM_NOTIFICATION;
+                }
             }
         }
     }
