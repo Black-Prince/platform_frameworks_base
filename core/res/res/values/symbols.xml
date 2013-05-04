@@ -1823,4 +1823,7 @@
   <!-- Electron Beam -->
   <java-symbol type="bool" name="config_screenOffAnimation" />
 
+  <!-- Panel auto brightness -->
+  <java-symbol type="integer" name="config_panelAutoBrightnessValue" />
+
 </resources>
