@@ -20,6 +20,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
+import android.app.ActivityManagerNative;
 import android.app.IProfileManager;
 import android.app.NotificationGroup;
 import android.app.Profile;
@@ -218,6 +219,15 @@ public class ProfileManagerService extends IProfileManager.Stub {
 
                 restoreCallingIdentity(token);
                 persistIfDirty();
+            } else if (lastProfile != mActiveProfile &&
+                    ActivityManagerNative.isSystemReady()) {
+                // Something definitely changed: notify.
+                long token = clearCallingIdentity();
+                Intent broadcast = new Intent(INTENT_ACTION_PROFILE_UPDATED);
+                broadcast.putExtra("name", mActiveProfile.getName());
+                broadcast.putExtra("uuid", mActiveProfile.getUuid().toString());
+                mContext.sendBroadcastAsUser(broadcast, UserHandle.ALL);
+                restoreCallingIdentity(token);
             }
             return true;
         } catch (Exception ex) {
