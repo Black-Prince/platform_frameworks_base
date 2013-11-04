@@ -2742,6 +2742,14 @@ public final class Settings {
 
         /**
          * Hide scroll bar in power widget
+         * Quick Settings Quick Pulldown
+         *
+         * @hide
+         */
+        public static final String QS_QUICK_PULLDOWN = "qs_quick_pulldown";
+
+        /**
+         * Use the Notification Power Widget? (Who wouldn't!)
          *
          * @hide
          */
