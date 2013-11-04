@@ -70,6 +70,8 @@ public final class Profile implements Parcelable, Comparable {
 
     private Map<Integer, VibratorSettings> vibrators = new HashMap<Integer, VibratorSettings>();
 
+    private RingModeSettings mRingMode = new RingModeSettings();
+
     private AirplaneModeSettings mAirplaneMode = new AirplaneModeSettings();
 
     private int mScreenLockMode = LockMode.DEFAULT;
@@ -183,6 +185,7 @@ public final class Profile implements Parcelable, Comparable {
                 connections.values().toArray(new Parcelable[connections.size()]), flags);
         dest.writeParcelableArray(vibrators.values().toArray(new Parcelable[vibrators.size()]), flags);
         dest.writeParcelable(mSilentMode, flags);
+        dest.writeParcelable(mRingMode, flags);
         dest.writeParcelable(mAirplaneMode, flags);
         dest.writeInt(mScreenLockMode);
     }
@@ -219,6 +222,7 @@ public final class Profile implements Parcelable, Comparable {
             vibrators.put(vibrator.getVibratorId(), vibrator);
         }
         mSilentMode = (SilentModeSettings) in.readParcelable(null);
+        mRingMode = (RingModeSettings) in.readParcelable(null);
         mAirplaneMode = (AirplaneModeSettings) in.readParcelable(null);
         mScreenLockMode = in.readInt();
     }
@@ -286,12 +290,12 @@ public final class Profile implements Parcelable, Comparable {
         mDirty = true;
     }
 
-    public SilentModeSettings getSilentMode() {
-        return mSilentMode;
+    public RingModeSettings getRingMode() {
+        return mRingMode;
     }
 
-    public void setSilentMode(SilentModeSettings descriptor) {
-        mSilentMode = descriptor;
+    public void setRingMode(RingModeSettings descriptor) {
+        mRingMode = descriptor;
         mDirty = true;
     }
 
@@ -342,6 +346,7 @@ public final class Profile implements Parcelable, Comparable {
                 return true;
             }
         if (mSilentMode.isDirty()) {
+        if (mRingMode.isDirty()) {
             return true;
         }
         if (mAirplaneMode.isDirty()) {
@@ -385,6 +390,8 @@ public final class Profile implements Parcelable, Comparable {
         builder.append("</screen-lock-mode>\n");
 
         mAirplaneMode.getXmlString(builder, context);
+
+        mRingMode.getXmlString(builder, context);
 
         for (ProfileGroup pGroup : profileGroups.values()) {
             pGroup.getXmlString(builder, context);
@@ -476,9 +483,9 @@ public final class Profile implements Parcelable, Comparable {
                 if (name.equals("profiletype")) {
                     profile.setProfileType(xpp.nextText().equals("toggle") ? TOGGLE_TYPE : CONDITIONAL_TYPE);
                 }
-                if (name.equals("silentModeDescriptor")) {
-                    SilentModeSettings smd = SilentModeSettings.fromXml(xpp, context);
-                    profile.setSilentMode(smd);
+                if (name.equals("ringModeDescriptor")) {
+                    RingModeSettings smd = RingModeSettings.fromXml(xpp, context);
+                    profile.setRingMode(smd);
                 }
                 if (name.equals("airplaneModeDescriptor")) {
                     AirplaneModeSettings amd = AirplaneModeSettings.fromXml(xpp, context);
@@ -534,6 +541,8 @@ public final class Profile implements Parcelable, Comparable {
                 vs.processOverride(context);
             }
         }
+        // Set ring mode
+        mRingMode.processOverride(context);
         // Set airplane mode
         mAirplaneMode.processOverride(context);
     }
