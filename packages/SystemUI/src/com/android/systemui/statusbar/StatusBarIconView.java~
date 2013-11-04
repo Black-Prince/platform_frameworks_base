@@ -48,8 +48,11 @@ public class StatusBarIconView extends AnimatedImageView {
     private int mNumberY;
     private String mNumberText;
     private Notification mNotification;
+<<<<<<< HEAD
+=======
     private boolean mShowNotificationCount;
     private SettingsObserver mObserver;
+>>>>>>> 73b3e77... SystemUI: fix memory leaks
 
     public StatusBarIconView(Context context, String slot, Notification notification) {
         super(context);
@@ -62,8 +65,11 @@ public class StatusBarIconView extends AnimatedImageView {
         mNotification = notification;
         setContentDescription(notification);
 
+<<<<<<< HEAD
+=======
         mObserver = new SettingsObserver(new Handler());
 
+>>>>>>> 73b3e77... SystemUI: fix memory leaks
         // We do not resize and scale system icons (on the right), only notification icons (on the
         // left).
         if (notification != null) {
